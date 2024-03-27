@@ -66,6 +66,7 @@ def reset_password_request():
         return jsonify({'error': 'Missing email'}), 400
     
     user = User.query.filter_by(email=email).first()
+    
     if user:
         send_password_reset_email(user)
     
