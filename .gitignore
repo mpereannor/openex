@@ -38,3 +38,8 @@ nosetests.xml
 venv
 app.db
 openex.log*
+
+*.env
+*.env.example
+*.env.local
+*.env.staging
