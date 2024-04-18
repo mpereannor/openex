@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from flask_login import login_user, logout_user, current_user, login_required
 from app import db
 from app.transactions import bp
-from app.models import Transaction, Account
+from app.models import Transaction, Account, User
 from app.utils import allacounts
 from flask_babel import get_locale
 
@@ -81,9 +81,13 @@ def create_transaction():
         db.session.add(second_account)
         db.session.commit()
 
+
+
+    transaction_id = Transaction.query.count() + 1
+
     #create new transaction - first entry
     new_transaction = Transaction(
-        transaction_id=Transaction.query.count() + 1,
+        transaction_id=transaction_id,
         amount=amount,
         direction=direction,
         description=description,
@@ -96,7 +100,7 @@ def create_transaction():
 
     #create new transaction - second entry
     opposite_transaction = Transaction(
-        transaction_id = Transaction.query.count() + 1,
+        transaction_id = transaction_id,
         amount=amount,
         direction=opposite_direction,
         description=description,
@@ -110,9 +114,47 @@ def create_transaction():
     return jsonify({ 'message': 'Transaction created successfully'}), 201
 
     
-    
+@bp.route('/transactions', methods=['GET'])
+@login_required
+def get_transactions():
+    transactions = Transaction.query.limit(10).all()
 
+    serialized_transactions = []
+    for transaction in transactions:  
+        serialized_transaction = { 
+            'id': transaction.id,
+            'transaction_id': transaction.transaction_id,
+            'amount': transaction.amount,
+            'direction': transaction.direction,
+            'description': transaction.description,
+            'account_number': transaction.account_id,
+            'second_account_number': transaction.second_account_id,
+            'client': transaction.client.username
+        }   
+        serialized_transactions.append(serialized_transaction)
+    return jsonify(serialized_transactions), 200
 
-    
-    
+@bp.route('/transactions/user/<int:user_id>', methods=['GET'])
+@login_required
+def get_user_transactions(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({ 'error': 'User not found' }), 404
 
+    transactions = db.session.query(Transaction).filter(Transaction.client.has(id=user_id)).all()
+
+    serialized_transactions = []
+    for transaction in transactions:
+        serialized_transaction = {
+            'id': transaction.id,
+            'transaction_id': transaction.transaction_id,
+            'amount': transaction.amount,
+            'direction': transaction.direction,
+            'description': transaction.description,
+            'account_number': transaction.account_id,
+            'second_account_number': transaction.second_account_id,
+            'client': transaction.client.username  
+        }
+        serialized_transactions.append(serialized_transaction)
+
+    return jsonify(serialized_transactions), 200

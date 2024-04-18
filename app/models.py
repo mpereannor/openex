@@ -72,7 +72,7 @@ class Account(db.Model):
 class Transaction(db.Model):
     __tablename__ = 'transactions'
     id: so.Mapped[UUID] = so.mapped_column(default=lambda: str(uuid4()), index=True, primary_key=True)
-    transaction_id: so.Mapped[int] = so.mapped_column(sa.Integer, index=True, autoincrement=True, unique=True)
+    transaction_id: so.Mapped[int] = so.mapped_column(sa.Integer, index=True, autoincrement=True)
     created_at: so.Mapped[Optional[datetime]] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc))
     amount: so.Mapped[int] = so.mapped_column(sa.Integer)
