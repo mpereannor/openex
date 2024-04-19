@@ -84,6 +84,7 @@ def create_transaction():
 
 
     transaction_id = Transaction.query.count() + 1
+    opposite_direction =  -1 * direction
 
     #create new transaction - first entry
     new_transaction = Transaction(
