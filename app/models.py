@@ -15,7 +15,11 @@ from app import db, login
 Base = declarative_base()
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    id: so.Mapped[UUID] = so.mapped_column(
+        sa.String(64), 
+        default=lambda:str(uuid4()),
+        primary_key=True
+        )
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     firstname: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     lastname: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
@@ -79,7 +83,7 @@ class Transaction(db.Model):
     direction: so.Mapped[int] = so.mapped_column(sa.BigInteger)
     description: so.Mapped[str] = so.mapped_column(sa.String(64))
     client: so.Mapped[User] = so.relationship(back_populates='user_transactions')
-    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('users.id'), index=True)
+    user_id: so.Mapped[UUID] = so.mapped_column(sa.ForeignKey('users.id'), index=True)
     account_id: so.Mapped[int] = so.mapped_column( sa.ForeignKey('accounts.number'), index=True)
     second_account_id: so.Mapped[int] = so.mapped_column( sa.ForeignKey('accounts.number'), index=True)
 
