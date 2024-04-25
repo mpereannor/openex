@@ -63,7 +63,7 @@ class User(UserMixin, db.Model):
 def load_user(id): 
     return db.session.get(User, int(id))   
 
-class Account(db.Model):
+class Account(SearchableMixin, db.Model):
     __tablename__ = 'accounts'
     number: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True, index=True, autoincrement=True)
     created_at: so.Mapped[Optional[datetime]] = so.mapped_column(
