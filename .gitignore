@@ -40,6 +40,7 @@ app.db
 openex.log*
 
 *.env
+*.env.docker
 *.env.example
 *.env.local
 *.env.staging
