@@ -14,24 +14,6 @@ Openex is an API designed for a stock exchange platform. This application is bui
 - Email notifications for errors
 - Structured logging
 
-## Directory Structure
-
-openex/
-│
-├── app/
-│ ├── init.py
-│ ├── auth/
-│ ├── errors/
-│ ├── main/
-│ ├── profile/
-│ ├── transactions/
-│ ├── models.py
-│ └── ...
-├── config.py
-├── run.py
-├── migrations/
-├── README.md
-└── ...
 
 
 ## Prerequisites
